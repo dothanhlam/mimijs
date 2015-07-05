@@ -5,123 +5,192 @@
 MimiJS = (function () {
     'use strict';
     var resources = {
-        controller: {},
-        controllerDependencies: {},
-
-        routes: [],
+        filters: {},
+        constants: {},
+        factory: {},
+        $me: {},
         mode: null,
         root: '/',
+        routes: [],
+        controller: {},
+        controllerDependencies: {},
         config: function (options) {
-            this.mode = options && options.mode && options.mode == 'history'
+            resources.mode = options && options.mode && options.mode == 'history'
             && !!(history.pushState) ? 'history' : 'hash';
-            this.root = options && options.root ? '/' + this.clearSlashes(options.root) + '/' : '/';
-            return this;
+            resources.root = options && options.root ? '/' + resources.clearSlashes(options.root) + '/' : '/';
         },
+
         getFragment: function () {
             var fragment = '';
-            if (this.mode === 'history') {
-                fragment = this.clearSlashes(decodeURI(location.pathname + location.search));
+            if (resources.mode === 'history') {
+                fragment = resources.clearSlashes(decodeURI(location.pathname + location.search));
                 fragment = fragment.replace(/\?(.*)$/, '');
-                fragment = this.root != '/' ? fragment.replace(this.root, '') : fragment;
+                fragment = resources.root != '/' ? fragment.replace(resources.root, '') : fragment;
             }
             else {
                 var match = window.location.href.match(/#(.*)$/);
                 fragment = match ? match[1] : '';
             }
-            return this.clearSlashes(fragment);
+            return resources.clearSlashes(fragment);
         },
+
         clearSlashes: function (path) {
             return path.toString().replace(/\/$/, '').replace(/^\//, '');
         },
-        add: function (re, handler) {
-            if (typeof re == 'function') {
-                handler = re;
-                re = '';
-            }
-            this.routes.push({re: re, handler: handler});
-            return this;
-        },
-        remove: function (param) {
-            for (var i = 0, r; i < this.routes.length, r = this.routes[i]; i++) {
-                if (r.handler === param || r.re.toString() === param.toString()) {
-                    this.routes.splice(i, 1);
-                    return this;
-                }
-            }
-            return this;
-        },
-        flush: function () {
-            this.routes = [];
-            this.mode = null;
-            this.root = '/';
-            return this;
-        },
 
-        check: function (hash) {
+        check: function (f) {
             var keys, match, routeParams;
-            for (var i = 0, max = this.routes.length; i < max; i++) {
+            for (var i = 0, max = resources.routes.length; i < max; i++) {
                 routeParams = {}
-                keys = this.routes[i].path.match(/:([^\/]+)/g);
-                match = hash.match(new RegExp(this.routes[i].path.replace(/:([^\/]+)/g, "([^\/]*)")));
+                keys = resources.clearSlashes(resources.routes[i].path).match(/:([^\/]+)/g);
+                match = f.match(new RegExp(resources.clearSlashes(resources.routes[i].path).replace(/:([^\/]+)/g, "([^\/]*)")));
                 if (match) {
                     match.shift();
                     match.forEach(function (value, i) {
                         routeParams[keys[i].replace(":", "")] = value;
                     });
-                    this.routes[i].handler.call({}, routeParams);
-                    return this;
+                    var dependencies = api.loadDependencies(resources.controllerDependencies[resources.routes[i].handler]);
+                    dependencies.push(routeParams);
+                    resources.controller[resources.routes[i].handler].apply(this, dependencies);
+                    break;
                 }
             }
-            return this;
         },
 
         listen: function () {
-            var self = this;
-            var current = self.getFragment();
+            var current = "/";
             var fn = function () {
-                if (current !== self.getFragment()) {
-                    current = self.getFragment();
-                    self.check(current);
+                if (current !== resources.getFragment()) {
+                    current = resources.getFragment();
+                    resources.check(current);
                 }
             }
-            clearInterval(this.interval);
-            this.interval = setInterval(fn, 50);
-            return this;
-        },
-        navigate: function (path) {
-            path = path ? path : '';
-            if (this.mode === 'history') {
-                history.pushState(null, null, this.root + this.clearSlashes(path));
+            if (resources.mode == 'hash') {
+                clearInterval(this.interval);
+                this.interval = setInterval(fn, 50);
             }
-            else {
-                window.location.href.match(/#(.*)$/);
-                window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
+            if (resources.mode == 'history') {
+                this.interval = setTimeout(fn, 50);
             }
-            return this;
         }
-    };
+    }
 
     var api = {
+        filters: function (key, val) {
+            resources.filters[key] = val;
+        },
+
+        factory: function (key, arrayArg) {
+            var lastIndex = arrayArg.length - 1;
+            var dependencies = arrayArg.slice(0, -1);
+            if (typeof arrayArg[lastIndex] === "function") {
+                console.log("-" + api.loadDependencies(dependencies));
+                resources.factory[key] = arrayArg[lastIndex].apply(this, api.loadDependencies(dependencies)); // arrayArg[last_index];
+            }
+            else {
+                console.log("Nan");
+            }
+        },
+
         routes: function (route, controller) {
-            resources.routes.push({'path': route, 'handler': controller});
+            var temp = controller == null ? {'path': "", 'handler': route} : {'path': route, 'handler': controller};
+            resources.routes.push(temp);
         },
 
         controller: function (controller, handler) {
-            var last_index = handler.length - 1;
+            handler = handler instanceof Array ? handler : [handler];
+
+            var lastIndex = handler.length - 1;
             var dependencies = handler.slice(0, -1);
-            if (typeof handler[last_index] === "function") {
-                resources.controller[controller] = handler[last_index];
+
+            if (typeof handler[lastIndex] === "function") {
+                resources.controller[controller] = handler[lastIndex];
                 resources.controllerDependencies[controller] = dependencies;
             }
             else {
-                // throw exception here
-                console.log("not a function");
+                console.log("Nan");
             }
         },
 
-        loadDependencies: function () {
+        loadDependencies: function (args) {
+            var dependency = [];
+            for (var i = 0; i < args.length; i++) {
+                if (typeof args[i] === "string") {
+                    //look in modules
+                    if (resources.hasOwnProperty(args[i])) {
+                        dependency.push(api.loadModule(args[i]));
+                    }
+                    else {
+                        //look in factory
+                        if (resources.factory.hasOwnProperty(args[i])) {
+                            dependency.push(api.loadDependency(args[i]));
+                        }
+                        else {
+                            //look in constants
+                            if (resources.constants.hasOwnProperty(args[i])) {
+                                dependency.push(api.loadConstant(args[i]));
+                            }
+                            else {
+                                //if it is $me scope
+                                if (args[i] === "$mi") {
+                                    dependency.push({});
+                                }
+                                else {
+                                    console.log("Error: " + args[i] + " is not Found in constants and Factories");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return dependency;
+        },
 
+        loadModule: function (key) {
+            return resources[key];
+        },
+
+        loadDependency: function (key) {
+            return resources.factory[key];
+        },
+
+        loadConstant: function (key) {
+            return resources.constants[key];
+        },
+
+        constants: function (key, val) {
+            resources.constants[key] = val();
+        },
+
+        module: function (key, arrayArg) {
+            if (key.startsWith('mi')) {
+                var lastIndex = arrayArg.length - 1;
+                var dependencies = arrayArg.slice(0, -1);
+                if (typeof arrayArg[lastIndex] === "function") {
+                    console.log("-" + api.loadDependencies(dependencies));
+                    resources[key.substring(3, key.length)] = arrayArg[lastIndex].apply(this, api.loadDependencies(dependencies)); // arrayArg[last_index];
+                }
+                else {
+                    console.log("Nan");
+                }
+            }
+            else {
+                console.log("Error in module " + key + ": should starts with mi");
+            }
         }
+    };
+
+
+    function filters() {
+        api.filters(arguments[0], arguments[1]);
+    }
+
+    function factory() {
+        api.factory(arguments[0], arguments[1]);
+    }
+
+    function constants() {
+        api.constants(arguments[0], arguments[1]);
     }
 
     function routes() {
@@ -132,8 +201,12 @@ MimiJS = (function () {
         api.controller(arguments[0], arguments[1]);
     }
 
+    function module() {
+        api.module(arguments[0], arguments[1]);
+    }
+
     function initiate() {
-        resources.config({mode: 'history'});
+            resources.config({mode: 'hash'});
         resources.listen();
 
         if (typeof String.prototype.startsWith != 'function') {
@@ -147,7 +220,11 @@ MimiJS = (function () {
     initiate();
 
     return {
+        'filters': filters,
+        'factory': factory,
         'routes': routes,
-        'controller': controller
-    };
+        'controller': controller,
+        'constants': constants,
+        'module': module
+    }
 });

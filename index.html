@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>mimijs routing</title>
+    <script type="text/javascript" src="mimi.js"></script>
+</head>
+<body>
+<script>
+    var app = MimiJS();
+    app.controller("HomeController", function(){
+        console.log("this is home controller")
+    });
+
+    app.controller("DefaultController", function() {
+        console.log("this is default controller")
+    })
+
+    app.routes("home/", "HomeController");
+    app.routes("DefaultController");
+
+
+</script>
+</body>
+</html>
