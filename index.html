@@ -8,16 +8,26 @@
 <body>
 <script>
     var app = MimiJS();
-    app.controller("HomeController", function(){
-        console.log("this is home controller")
+
+    app.factory("ProductService", function() {
+        return {
+            get: function() {console.log("Product Service"); }
+        }
     });
 
-    app.controller("DefaultController", function() {
+    app.controller("HomeController", function(){
+        console.log("this is home controller")
+    }).controller("DefaultController", function() {
         console.log("this is default controller")
-    })
-
-    app.routes("home/", "HomeController");
-    app.routes("DefaultController");
+    }).controller("ProductController", ["ProductService", function(service, products) {
+        service.get();
+        console.log('products', products);
+    }])
+    app.routes("home/", "HomeController")
+            .routes("/products\/(.*)/", "ProductController")
+            .routes(function() {
+                console.log("default routing")
+            });
 
 
 </script>

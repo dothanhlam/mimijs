@@ -16,4 +16,9 @@ describe("routing", function() {
         expect(app.routes).toBeDefined();
         expect(app.routes).toBeTruthy();
     });
+
+    it("should return a reference to application", function() {
+        var ref = app.routes(function() {});
+        expect(ref).toEqual(app);
+    });
 });

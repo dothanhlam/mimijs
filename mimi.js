@@ -8,7 +8,7 @@ MimiJS = (function () {
         filters: {},
         constants: {},
         factory: {},
-        $me: {},
+        $mi: {},
         mode: null,
         root: '/',
         routes: [],
@@ -39,19 +39,23 @@ MimiJS = (function () {
         },
 
         check: function (f) {
-            var keys, match, routeParams;
+            var match, routeParams;
             for (var i = 0, max = resources.routes.length; i < max; i++) {
                 routeParams = {}
-                keys = resources.clearSlashes(resources.routes[i].path).match(/:([^\/]+)/g);
                 match = f.match(new RegExp(resources.clearSlashes(resources.routes[i].path).replace(/:([^\/]+)/g, "([^\/]*)")));
                 if (match) {
                     match.shift();
                     match.forEach(function (value, i) {
-                        routeParams[keys[i].replace(":", "")] = value;
+                        routeParams[match[i].replace(":", "")] = value;
                     });
-                    var dependencies = api.loadDependencies(resources.controllerDependencies[resources.routes[i].handler]);
-                    dependencies.push(routeParams);
-                    resources.controller[resources.routes[i].handler].apply(this, dependencies);
+                    if (typeof resources.routes[i].handler === "string") {
+                        var dependencies = api.loadDependencies(resources.controllerDependencies[resources.routes[i].handler]);
+                        dependencies.push(routeParams);
+                        resources.controller[resources.routes[i].handler].apply(this, dependencies);
+                    }
+                    else if (typeof resources.routes[i].handler === "function") {
+                        resources.routes[i].handler.apply(this, {});
+                    }
                     break;
                 }
             }
@@ -81,10 +85,10 @@ MimiJS = (function () {
         },
 
         factory: function (key, arrayArg) {
+            arrayArg = arrayArg instanceof  Array ? arrayArg : [arrayArg];
             var lastIndex = arrayArg.length - 1;
             var dependencies = arrayArg.slice(0, -1);
             if (typeof arrayArg[lastIndex] === "function") {
-                console.log("-" + api.loadDependencies(dependencies));
                 resources.factory[key] = arrayArg[lastIndex].apply(this, api.loadDependencies(dependencies)); // arrayArg[last_index];
             }
             else {
@@ -167,7 +171,6 @@ MimiJS = (function () {
                 var lastIndex = arrayArg.length - 1;
                 var dependencies = arrayArg.slice(0, -1);
                 if (typeof arrayArg[lastIndex] === "function") {
-                    console.log("-" + api.loadDependencies(dependencies));
                     resources[key.substring(3, key.length)] = arrayArg[lastIndex].apply(this, api.loadDependencies(dependencies)); // arrayArg[last_index];
                 }
                 else {
@@ -183,30 +186,36 @@ MimiJS = (function () {
 
     function filters() {
         api.filters(arguments[0], arguments[1]);
+        return this;
     }
 
     function factory() {
         api.factory(arguments[0], arguments[1]);
+        return this;
     }
 
     function constants() {
         api.constants(arguments[0], arguments[1]);
+        return this;
     }
 
     function routes() {
         api.routes(arguments[0], arguments[1]);
+        return this;
     }
 
     function controller() {
         api.controller(arguments[0], arguments[1]);
+        return this;
     }
 
     function module() {
         api.module(arguments[0], arguments[1]);
+        return this;
     }
 
     function initiate() {
-            resources.config({mode: 'hash'});
+        resources.config({mode: 'hash'});
         resources.listen();
 
         if (typeof String.prototype.startsWith != 'function') {
