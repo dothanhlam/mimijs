@@ -8,12 +8,12 @@ MimiJS = (function () {
         filters: {},
         constants: {},
         factory: {},
+        controller: {},
+        controllerDependencies: {},
         $mi: {},
         mode: null,
         root: '/',
         routes: [],
-        controller: {},
-        controllerDependencies: {},
         config: function (options) {
             resources.mode = options && options.mode && options.mode == 'history'
             && !!(history.pushState) ? 'history' : 'hash';
@@ -92,7 +92,7 @@ MimiJS = (function () {
                 resources.factory[key] = arrayArg[lastIndex].apply(this, api.loadDependencies(dependencies)); // arrayArg[last_index];
             }
             else {
-                console.log("Nan");
+                throw "Error: argument is not function";
             }
         },
 
@@ -112,7 +112,27 @@ MimiJS = (function () {
                 resources.controllerDependencies[controller] = dependencies;
             }
             else {
-                console.log("Nan");
+                throw "Error: argument is not function";
+            }
+        },
+
+        constants: function (key, val) {
+            resources.constants[key] = val();
+        },
+
+        module: function (key, arrayArg) {
+            if (key.startsWith('mi')) {
+                var lastIndex = arrayArg.length - 1;
+                var dependencies = arrayArg.slice(0, -1);
+                if (typeof arrayArg[lastIndex] === "function") {
+                    resources[key.substring(3, key.length)] = arrayArg[lastIndex].apply(this, api.loadDependencies(dependencies)); // arrayArg[last_index];
+                }
+                else {
+                    throw "Error: argument is not function";
+                }
+            }
+            else {
+                throw "Error: Module " + key + ": should starts with mi";
             }
         },
 
@@ -140,7 +160,7 @@ MimiJS = (function () {
                                     dependency.push({});
                                 }
                                 else {
-                                    console.log("Error: " + args[i] + " is not Found in constants and Factories");
+                                   throw "Error: " + args[i] + " is not found in Constants and Factories";
                                 }
                             }
                         }
@@ -160,26 +180,6 @@ MimiJS = (function () {
 
         loadConstant: function (key) {
             return resources.constants[key];
-        },
-
-        constants: function (key, val) {
-            resources.constants[key] = val();
-        },
-
-        module: function (key, arrayArg) {
-            if (key.startsWith('mi')) {
-                var lastIndex = arrayArg.length - 1;
-                var dependencies = arrayArg.slice(0, -1);
-                if (typeof arrayArg[lastIndex] === "function") {
-                    resources[key.substring(3, key.length)] = arrayArg[lastIndex].apply(this, api.loadDependencies(dependencies)); // arrayArg[last_index];
-                }
-                else {
-                    console.log("Nan");
-                }
-            }
-            else {
-                console.log("Error in module " + key + ": should starts with mi");
-            }
         }
     };
 
