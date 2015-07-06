@@ -4,33 +4,64 @@
     <meta charset="UTF-8">
     <title>mimijs routing</title>
     <script type="text/javascript" src="mimi.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.1.2/mustache.min.js"></script>
 </head>
 <body>
 <script>
-    var app = MimiJS();
+    var app = MimiJS({mode: 'hash'});
 
-    app.factory("ProductService", function() {
+    app.factory("ProductView", function() {
         return {
-            get: function() {console.log("Product Service"); }
+            render: function(id, data) {
+                var output = Mustache.render("<ul> {{#stooges}} <li><a href='#/'>{{name}}</a></li>{{/stooges}}</ul> ", data);
+                document.getElementById(id).innerHTML = output;
+            }
+        }
+    }).factory("ProductService", function() {
+        return {
+            get: function() {
+                return {
+                    "stooges": [
+                        { "name": "Moe" },
+                        { "name": "Larry" },
+                        { "name": "Curly" }
+                    ]
+                };
+            }
         }
     });
+
 
     app.controller("HomeController", function(){
         console.log("this is home controller");
     }).controller("DefaultController", function() {
         console.log("this is default controller");
-    }).controller("ProductController", ["ProductService", function(service, products) {
-        service.get();
-        console.log('products object', products);
+    }).controller("ProductController", ["$mi","ProductService", "ProductView", function(mi, service, view, products) {
+        console.log("ProductController")
+        var data  = service.get();
+        view.render("container", data);
     }])
+
     app.routes("home/", "HomeController")
            // .routes("/products\/(.*)/", "ProductController")
             .routes("products/:id/", "ProductController")
             .routes(function() {
+                var data = { "stooges": [
+                    { "name": "Moe" },
+                    { "name": "Larry" },
+                    { "name": "Curly" },
+                    { "name": "Moe" },
+                    { "name": "Larry" },
+                    { "name": "Curly" }
+                ]};
+                var output = Mustache.render("<ul> {{#stooges}} <li><a href='#/products/12'>{{name}}</a></li>{{/stooges}}</ul> ", data);
+                document.getElementById("container").innerHTML = output;
                 console.log("default routing")
             });
 
 
 </script>
+    <h1>The content below changes</h1>
+    <div id="container"></div>
 </body>
 </html>

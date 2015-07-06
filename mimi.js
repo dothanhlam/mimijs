@@ -2,7 +2,7 @@
  * Created by LamDo on 7/3/15.
  */
 
-MimiJS = (function () {
+MimiJS = (function (config) {
     'use strict';
     var resources = {
         filters: {},
@@ -77,7 +77,7 @@ MimiJS = (function () {
                 this.interval = setTimeout(fn, 50);
             }
         }
-    }
+    };
 
     var api = {
         filters: function (key, val) {
@@ -121,18 +121,19 @@ MimiJS = (function () {
         },
 
         module: function (key, arrayArg) {
-            if (key.startsWith('mi')) {
+            if (key.indexOf('mi.') == 0) {
+                arrayArg = arrayArg instanceof Array ? arrayArg : [arrayArg];
                 var lastIndex = arrayArg.length - 1;
                 var dependencies = arrayArg.slice(0, -1);
                 if (typeof arrayArg[lastIndex] === "function") {
                     resources[key.substring(3, key.length)] = arrayArg[lastIndex].apply(this, api.loadDependencies(dependencies)); // arrayArg[last_index];
                 }
                 else {
-                    throw "Error: argument is not function";
+                    throw "Error: Argument is not function";
                 }
             }
             else {
-                throw "Error: Module " + key + ": should starts with mi";
+                throw "Error: Module " + key + ": should starts with mi.";
             }
         },
 
@@ -155,12 +156,12 @@ MimiJS = (function () {
                                 dependency.push(api.loadConstant(args[i]));
                             }
                             else {
-                                //if it is $me scope
+                                //if it is $mi scope
                                 if (args[i] === "$mi") {
                                     dependency.push({});
                                 }
                                 else {
-                                   throw "Error: " + args[i] + " is not found in Constants and Factories";
+                                    throw "Error: " + args[i] + " is not found in Constants and Factories";
                                 }
                             }
                         }
@@ -214,21 +215,13 @@ MimiJS = (function () {
         return this;
     }
 
-    function initiate() {
-        resources.config({mode: 'hash'});
+    function initiate(config) {
+        config = config || {mode: 'hash'};
+        resources.config(config);
         resources.listen();
-
-        if (typeof String.prototype.startsWith != 'function') {
-            // see below for better implementation!
-            String.prototype.startsWith = function (str) {
-                return this.indexOf(str) == 0;
-            };
-        }
     }
 
-    initiate();
-
-    return {
+    var publicAPIs = {
         'filters': filters,
         'factory': factory,
         'routes': routes,
@@ -236,4 +229,14 @@ MimiJS = (function () {
         'constants': constants,
         'module': module
     }
+    if (typeof jQuery === 'undefined') {
+        console.warn("jQuery is NOT available, native APIs loaded !");
+    }
+    else {
+        // jQuery is available
+    }
+
+    initiate();
+
+    return publicAPIs;
 });

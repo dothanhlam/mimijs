@@ -1,0 +1,19 @@
+{
+  "name": "mimijs",
+  "version": "0.0.1",
+  "homepage": "https://github.com/dothanhlam/mimijs",
+  "authors": [
+    "Lam Do <dothanhlam@gmail.com>"
+  ],
+  "description": "light weight JavaScript framework",
+  "main": "mimi.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/components",
+    "test",
+    "tests"
+  ]
+}
