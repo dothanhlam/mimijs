@@ -12,17 +12,35 @@
 ```
 var app = MimiJS();
 ```
-
-###Declaring Service
+###View (Testing with Mustache template)
 ```
-app.factory("ProductService", function() {
+app.factory("ProductView", function() {
   return {
-    get: function() {console.log("Product Service"); }
+    render: function(id, data) {
+      var output = Mustache.render("<ul> {{#stooges}} <li><a href='#/'>{{name}}</a></li>{{/stooges}}</ul> ", data);
+      document.getElementById(id).innerHTML = output;
+    }
   }
 });
 ```
+###Service
+```
+app.factory("ProductService", function() {
+  return {
+    get: function() {
+      return {
+        "stooges": [
+            { "name": "Moe" },
+            { "name": "Larry" },
+            { "name": "Curly" }
+          ]
+        };
+      }
+    }
+});
+```
 
-###Declaring Controller
+###Controller
 ```
 app.controller("HomeController", function(){
   console.log("this is home controller");
