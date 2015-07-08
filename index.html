@@ -10,14 +10,19 @@
 <script>
     var app = MimiJS({mode: 'hash'});
 
-    app.factory("ProductView", function() {
+    app.factory("ProductView",['$mi', function(mi) {
+
+        console.log("ProductView", this);
+
         return {
             render: function(id, data) {
-                var output = Mustache.render("<ul> {{#stooges}} <li><a href='#/'>{{name}}</a></li>{{/stooges}}</ul> ", data);
+                var output = Mustache.render("<ul> {{#stooges}} <li><button class='button'>{{name}}</button></li>{{/stooges}}</ul> ", data);
                 document.getElementById(id).innerHTML = output;
             }
+
+
         }
-    }).factory("ProductService", function() {
+    }]).factory("ProductService", function() {
         return {
             get: function() {
                 return {
@@ -36,10 +41,12 @@
         console.log("this is home controller");
     }).controller("DefaultController", function() {
         console.log("this is default controller");
-    }).controller("ProductController", ["$mi","ProductService", "ProductView", function(mi, service, view, products) {
-        console.log("ProductController")
+    }).controller("ProductController", ["$mi", "$observer", "ProductService", "ProductView", function(mi, observer, service, view, products) {
+        console.log("ProductController - mi", mi)
         var data  = service.get();
         view.render("container", data);
+
+        $("#container").hide();
     }])
 
     app.routes("home/", "HomeController")
@@ -58,7 +65,6 @@
                 document.getElementById("container").innerHTML = output;
                 console.log("default routing")
             });
-
 
 </script>
     <h1>The content below changes</h1>

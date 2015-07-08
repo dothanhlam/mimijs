@@ -7,10 +7,11 @@ MimiJS = (function (config) {
     var resources = {
         filters: {},
         constants: {},
+        provider: {},
+        service: {},
         factory: {},
         controller: {},
         controllerDependencies: {},
-        $mi: {},
         mode: null,
         root: '/',
         routes: [],
@@ -82,6 +83,10 @@ MimiJS = (function (config) {
     var api = {
         filters: function (key, val) {
             resources.filters[key] = val;
+        },
+
+        provider: function(name, provider) {
+
         },
 
         factory: function (key, arrayArg) {
@@ -156,7 +161,7 @@ MimiJS = (function (config) {
                                 dependency.push(api.loadConstant(args[i]));
                             }
                             else {
-                                //if it is $mi scope
+                                //if it is $mi scope - most likely angular $scope
                                 if (args[i] === "$mi") {
                                     dependency.push({});
                                 }
@@ -168,6 +173,7 @@ MimiJS = (function (config) {
                     }
                 }
             }
+
             return dependency;
         },
 
@@ -195,6 +201,15 @@ MimiJS = (function (config) {
         return this;
     }
 
+    function service() {
+        return this;
+    }
+
+    function provider() {
+        api.provider(arguments[0], arguments[1]);
+        return this;
+    }
+
     function constants() {
         api.constants(arguments[0], arguments[1]);
         return this;
@@ -219,18 +234,130 @@ MimiJS = (function (config) {
         config = config || {mode: 'hash'};
         resources.config(config);
         resources.listen();
+
+        factory("$controller", function() {
+
+            function ControllerService() {
+
+            }
+
+            ControllerService.prototype  = {
+                extend: function(base) {
+                    return this;
+                },
+
+                get: function(name) {
+
+                }
+            }
+
+            return new ControllerService();
+        });
+
+
+        factory("$observer", function() {
+            function Observer() {
+                this.fns = [];
+            }
+
+            Observer.prototype = {
+                subscribe : function(fn) {
+                    this.fns.push(fn);
+                    return this;
+                },
+
+                unsubscribe : function(fn) {
+                    this.fns = this.fns.filter(
+                        function(el) {
+                            if ( el !== fn ) {
+                                return el;
+                            }
+                        }
+                    );
+                    return this;
+                },
+
+                fire : function(o, thisObj) {
+                    var scope = thisObj || window;
+                    this.fns.forEach(
+                        function(el) {
+                            el.call(scope, o);
+                        }
+                    );
+                    return this;
+                }
+            };
+
+            return new Observer();
+        });
     }
+
+
+    var CherryMimi = function (selector) {
+        // $(), $(null), $(undefined), $(false)
+        if (!selector) return this;
+
+        var nodes;
+        if (selector.indexOf("#") == 0) {
+            nodes = document.getElementById(selector.slice(1))
+        }
+        else if (selector.indexOf(".") == 0) {
+            nodes = document.getElementsByClassName(selector.slice(1))
+        }
+        else {
+            nodes = document.getElementsByTagName(selector);
+        }
+
+        if (nodes === null) {
+            return this;
+        }
+
+        if (nodes instanceof Array) {
+            for (var i = 0; i < nodes.length; i++) {
+                this[i] = nodes[i];
+            }
+            this.length = nodes.length;
+        }
+        else {
+            this[0] = nodes;
+            this.length = 1;
+        }
+        return this;
+    }
+
+    CherryMimi.prototype = {
+        // API Methods
+        hide: function() {
+            for (var i = 0; i < this.length; i++) {
+                this[i].style.display = 'none';
+            }
+            return this;
+        },
+        remove: function() {
+            for (var i = 0; i < this.length; i++) {
+                this[i].parentNode.removeChild(this[i]);
+            }
+            return this;
+        }
+        // More methods here, each using 'return this', to enable chaining
+    };
 
     var publicAPIs = {
         'filters': filters,
         'factory': factory,
+        'service': service,
+        'provider': provider,
         'routes': routes,
         'controller': controller,
         'constants': constants,
         'module': module
     }
     if (typeof jQuery === 'undefined') {
-        console.warn("jQuery is NOT available, native APIs loaded !");
+        console.warn("jQuery is not available, CherryMimi APIs loaded with very limited features!");
+        window.$ = function(selector) {
+            return new CherryMimi(selector)
+        };
+
     }
     else {
         // jQuery is available
