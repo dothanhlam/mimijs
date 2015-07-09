@@ -10,31 +10,36 @@
     <script>
         var app = MimiJS({mode: 'hash'});
         app.factory("TodoService", function() {
-            var todos = [
-                { "id": 0, "content": "buying nexus one devices", "status": true},
-                { "id": 1, "content": "buying galaxy nexus devices", "status": false},
-                { "id": 2, "content": "buying nexus 4 devices", "status": false},
-                { "id": 3, "content": "buying nexus 5 devices", "status": false},
-                { "id": 4, "content": "buying nexus 6 devices", "status": false}];
             return {
-                get: function() { return {"stooges" : todos} }
+                get: function(callback) {
+                    $().getJSON({"url": "todos.json"}, callback)
+                }
             };
         }).factory("TodoView", function() {
             return {
-                render: function(id, data) {
-                    var output = Mustache.render("<ul>{{#stooges}}<li><span {{#status}}style='text-decoration:line-through'{{/status}}{{^status}}style='text-decoration:none'{{/status}}>{{content}}</span><input type='checkbox' value='{{id}}' {{#status}}checked{{/status}}></li>{{/stooges}}</ul>", data);
-                    document.getElementById(id).innerHTML = output;                    
+                renderWithTemplate: function(id, data, template) {
+                    if (typeof cache !== "undefined") {
+                        $("#"+id)[0].innerHTML = Mustache.render(cache, data);
+                        return;
+                    }
+                    $().getJSON({url: template}, function(resp) {
+                        cache = resp;
+                        $("#"+id)[0].innerHTML  = Mustache.render(cache, data);
+                    })
                 }
             }
         });
 
-
         app.controller("MainController", ["TodoService", "TodoView", "$observer", function(service, view, observer) {
-            var todos = service.get();   
+            var todos = {};
+            service.get(function(resp) {
+                todos =  {"stooges": JSON.parse(resp)};
+                updateView();
+            });
 
             var updateView = function() {
-                view.render("container", todos);
-                var elements = document.getElementsByTagName("input");
+                view.renderWithTemplate("container", todos, "template.json");
+                var elements = $("input");
                 for (var i in elements) {
                     elements[i].onclick = function(e) {
                     var index = e.target.value;
@@ -43,9 +48,6 @@
                     }
                 }
             };
-
-           updateView();
-                      
         }]);
         // default route or main entry point
         app.routes("/", "MainController");

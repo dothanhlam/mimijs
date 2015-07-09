@@ -1,0 +1,1 @@
+<ul>{{#stooges}}<li><span {{#status}}style='text-decoration:line-through'{{/status}}{{^status}}style='text-decoration:none'{{/status}}>{{content}}</span><input type='checkbox' value='{{id}}' {{#status}}checked{{/status}}></li>{{/stooges}}</ul>

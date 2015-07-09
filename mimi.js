@@ -340,7 +340,7 @@ var MimiCherry = function (selector) {
         return this;
     }
 
-    if (nodes instanceof Array) {
+    if (nodes.hasOwnProperty('length')) {
         for (var i = 0; i < nodes.length; i++) {
             this[i] = nodes[i];
         }
@@ -370,7 +370,12 @@ MimiCherry.prototype = {
     },
 
     getJSON: function(options, callback) {
-        var xhttp = this.xhr();
+
+        var xhttp = function() {
+            var instance = new XMLHttpRequest();
+            return instance;
+        }();
+
         options.url = options.url || location.href;
         options.data = options.data || null;
         callback = callback ||
@@ -385,7 +390,7 @@ MimiCherry.prototype = {
             script.src = $url;
             document.body.appendChild(script);
         }
-        
+
         xhttp.open('GET', options.url, true);
         xhttp.send(options.data);
         xhttp.onreadystatechange = function() {
@@ -393,5 +398,6 @@ MimiCherry.prototype = {
                 callback(xhttp.responseText);
             }
         };
+        return this;
     }
 };

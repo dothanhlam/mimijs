@@ -1,0 +1,27 @@
+[
+  {
+    "id": 0,
+    "content": "buying nexus one devices",
+    "status": true
+  },
+  {
+    "id": 1,
+    "content": "buying galaxy nexus devices",
+    "status": false
+  },
+  {
+    "id": 2,
+    "content": "buying nexus 4 devices",
+    "status": false
+  },
+  {
+    "id": 3,
+    "content": "buying nexus 5 devices",
+    "status": false
+  },
+  {
+    "id": 4,
+    "content": "buying nexus 6 devices",
+    "status": false
+  }
+]
