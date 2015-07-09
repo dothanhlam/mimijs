@@ -306,9 +306,9 @@ MimiJS = (function (config) {
         'module': module
     }
     if (typeof jQuery === 'undefined') {
-        console.warn("jQuery is not available, CherryMimi APIs loaded with very limited features!");
+        console.warn("jQuery is not available, MimiCherry APIs loaded with very limited features!");
         window.$ = function(selector) {
-            return new CherryMimi(selector)
+            return new MimiCherry(selector)
         };
 
     }
@@ -321,7 +321,7 @@ MimiJS = (function (config) {
     return publicAPIs;
 });
 
-var CherryMimi = function (selector) {
+var MimiCherry = function (selector) {
     // $(), $(null), $(undefined), $(false)
     if (!selector) return this;
 
@@ -353,8 +353,8 @@ var CherryMimi = function (selector) {
     return this;
 }
 
-// CherryMimi decoration
-CherryMimi.prototype = {
+// MimiCherry decoration
+MimiCherry.prototype = {
     // API Methods
     hide: function() {
         for (var i = 0; i < this.length; i++) {
@@ -367,6 +367,31 @@ CherryMimi.prototype = {
             this[i].parentNode.removeChild(this[i]);
         }
         return this;
+    },
+
+    getJSON: function(options, callback) {
+        var xhttp = this.xhr();
+        options.url = options.url || location.href;
+        options.data = options.data || null;
+        callback = callback ||
+        function() {};
+        options.type = options.type || 'json';
+        var url = options.url;
+
+        if (options.type == 'jsonp') { // JSONP
+            window.jsonCallback = callback; // Now our callback method is globally visible
+            var $url = url.replace('callback=?', 'callback=jsonCallback');
+            var script = document.createElement('script');
+            script.src = $url;
+            document.body.appendChild(script);
+        }
+        
+        xhttp.open('GET', options.url, true);
+        xhttp.send(options.data);
+        xhttp.onreadystatechange = function() {
+            if (xhttp.status == 200 && xhttp.readyState == 4) {
+                callback(xhttp.responseText);
+            }
+        };
     }
-    // More methods here, each using 'return this', to enable chaining
 };
