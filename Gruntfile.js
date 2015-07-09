@@ -13,8 +13,10 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: ['<%= jshint.files %>'],
-            tasks: ['jshint']
+            scripts: {
+                files: ['test/**/*.tests.js'],
+                tasks: ['jasmine']
+            }
         },
         jasmine: {
             pivotal: {
@@ -30,6 +32,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
-    grunt.registerTask('default', ['jshint']);
+    grunt.registerTask('default', ['jasmine', 'watch']);
 
 };

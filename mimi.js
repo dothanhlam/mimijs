@@ -293,8 +293,6 @@ MimiJS = (function (config) {
     }
 
 
-    
-
     var publicAPIs = {
         'filters': filters,
         'factory': factory,
@@ -305,12 +303,12 @@ MimiJS = (function (config) {
         'constants': constants,
         'module': module
     }
+
     if (typeof jQuery === 'undefined') {
         console.warn("jQuery is not available, MimiCherry APIs loaded with very limited features!");
         window.$ = function(selector) {
             return new MimiCherry(selector)
         };
-
     }
     else {
         // jQuery is available
@@ -320,6 +318,8 @@ MimiJS = (function (config) {
 
     return publicAPIs;
 });
+
+MimiJS.VERSION = "0.0.5";
 
 var MimiCherry = function (selector) {
     // $(), $(null), $(undefined), $(false)
@@ -378,13 +378,12 @@ MimiCherry.prototype = {
 
         options.url = options.url || location.href;
         options.data = options.data || null;
-        callback = callback ||
-        function() {};
+        callback = callback || function() {};
         options.type = options.type || 'json';
         var url = options.url;
 
-        if (options.type == 'jsonp') { // JSONP
-            window.jsonCallback = callback; // Now our callback method is globally visible
+        if (options.type == 'jsonp') {
+            window.jsonCallback = callback;
             var $url = url.replace('callback=?', 'callback=jsonCallback');
             var script = document.createElement('script');
             script.src = $url;

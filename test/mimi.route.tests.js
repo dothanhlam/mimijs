@@ -12,13 +12,17 @@ describe("routing", function() {
 
     });
 
-    it("has routes to be defined", function() {
-        expect(app.routes).toBeDefined();
-        expect(app.routes).toBeTruthy();
-    });
-
-    it("should return a reference to application", function() {
+    it("should return a reference to MimiJS instance", function() {
         var ref = app.routes(function() {});
         expect(ref).toEqual(app);
+    });
+
+    it("should able to navigate", function() {
+        spyOn(app, "controller");
+        spyOn(app, "routes");
+        app.controller("DefaultController", function() {});
+        expect(app.controller).toHaveBeenCalled();
+        app.routes("DefaultController");
+        expect(app.routes).toHaveBeenCalled();
     });
 });
