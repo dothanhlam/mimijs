@@ -293,54 +293,7 @@ MimiJS = (function (config) {
     }
 
 
-    var CherryMimi = function (selector) {
-        // $(), $(null), $(undefined), $(false)
-        if (!selector) return this;
-
-        var nodes;
-        if (selector.indexOf("#") == 0) {
-            nodes = document.getElementById(selector.slice(1))
-        }
-        else if (selector.indexOf(".") == 0) {
-            nodes = document.getElementsByClassName(selector.slice(1))
-        }
-        else {
-            nodes = document.getElementsByTagName(selector);
-        }
-
-        if (nodes === null) {
-            return this;
-        }
-
-        if (nodes instanceof Array) {
-            for (var i = 0; i < nodes.length; i++) {
-                this[i] = nodes[i];
-            }
-            this.length = nodes.length;
-        }
-        else {
-            this[0] = nodes;
-            this.length = 1;
-        }
-        return this;
-    }
-
-    CherryMimi.prototype = {
-        // API Methods
-        hide: function() {
-            for (var i = 0; i < this.length; i++) {
-                this[i].style.display = 'none';
-            }
-            return this;
-        },
-        remove: function() {
-            for (var i = 0; i < this.length; i++) {
-                this[i].parentNode.removeChild(this[i]);
-            }
-            return this;
-        }
-        // More methods here, each using 'return this', to enable chaining
-    };
+    
 
     var publicAPIs = {
         'filters': filters,
@@ -367,3 +320,53 @@ MimiJS = (function (config) {
 
     return publicAPIs;
 });
+
+var CherryMimi = function (selector) {
+    // $(), $(null), $(undefined), $(false)
+    if (!selector) return this;
+
+    var nodes;
+    if (selector.indexOf("#") == 0) {
+        nodes = document.getElementById(selector.slice(1))
+    }
+    else if (selector.indexOf(".") == 0) {
+        nodes = document.getElementsByClassName(selector.slice(1))
+    }
+    else {
+        nodes = document.getElementsByTagName(selector);
+    }
+
+    if (nodes === null) {
+        return this;
+    }
+
+    if (nodes instanceof Array) {
+        for (var i = 0; i < nodes.length; i++) {
+            this[i] = nodes[i];
+        }
+        this.length = nodes.length;
+    }
+    else {
+        this[0] = nodes;
+        this.length = 1;
+    }
+    return this;
+}
+
+// CherryMimi decoration
+CherryMimi.prototype = {
+    // API Methods
+    hide: function() {
+        for (var i = 0; i < this.length; i++) {
+            this[i].style.display = 'none';
+        }
+        return this;
+    },
+    remove: function() {
+        for (var i = 0; i < this.length; i++) {
+            this[i].parentNode.removeChild(this[i]);
+        }
+        return this;
+    }
+    // More methods here, each using 'return this', to enable chaining
+};
