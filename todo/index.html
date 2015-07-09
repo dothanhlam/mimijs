@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>todo by mimi</title>
+    <script type="text/javascript" src="../mimi.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.1.2/mustache.min.js"></script>
+</head>
+<body>
+    <script>
+        var app = MimiJS({mode: 'hash'});
+        app.factory("TodoService", function() {
+            var todos = [
+                { "id": 0, "content": "buying nexus one devices", "status": true},
+                { "id": 1, "content": "buying galaxy nexus devices", "status": false},
+                { "id": 2, "content": "buying nexus 4 devices", "status": false},
+                { "id": 3, "content": "buying nexus 5 devices", "status": false},
+                { "id": 4, "content": "buying nexus 6 devices", "status": false}];
+            return {
+                get: function() { return {"stooges" : todos} }
+            };
+        }).factory("TodoView", function() {
+            return {
+                render: function(id, data) {
+                    var output = Mustache.render("<ul>{{#stooges}}<li><span {{#status}}style='text-decoration:line-through'{{/status}}{{^status}}style='text-decoration:none'{{/status}}>{{content}}</span><input type='checkbox' value='{{id}}' {{#status}}checked{{/status}}></li>{{/stooges}}</ul>", data);
+                    document.getElementById(id).innerHTML = output;                    
+                }
+            }
+        });
+
+
+        app.controller("MainController", ["TodoService", "TodoView", "$observer", function(service, view, observer) {
+            var todos = service.get();   
+
+            var updateView = function() {
+                view.render("container", todos);
+                var elements = document.getElementsByTagName("input");
+                for (var i in elements) {
+                    elements[i].onclick = function(e) {
+                    var index = e.target.value;
+                    todos.stooges[index].status = !todos.stooges[index].status;
+                    updateView();
+                    }
+                }
+            };
+
+           updateView();
+                      
+        }]);
+        // default route or main entry point
+        app.routes("/", "MainController");
+    </script>
+    <h1>Todo - by MimiJS</h1>
+    <div id="container">
+    </div>
+</body>
+</html>
