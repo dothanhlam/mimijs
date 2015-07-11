@@ -7,7 +7,7 @@
 |_|   |_||___| |_|   |_||___| |_______||_______|
 ```
 #MimiJS - Tiny JavaScript framework
-
+[![Build Status](https://travis-ci.org/dothanhlam/mimijs.svg?branch=master)](https://travis-ci.org/dothanhlam/mimijs)
 ##Features
 - Routes and Controllers, supports SPA
 - Factory
