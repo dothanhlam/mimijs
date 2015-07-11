@@ -6,7 +6,7 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         jshint: {
-            files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
+            files: ['gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
             options: {
                 globals: {
                 }
@@ -32,6 +32,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
+    grunt.registerTask('travis', ['jasmine']);
     grunt.registerTask('default', ['jasmine', 'watch']);
 
 };

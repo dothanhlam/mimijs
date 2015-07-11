@@ -10,6 +10,11 @@
     "grunt-contrib-jasmine": "^0.8.2",
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-watch": "^0.6.1",
-    "jasmine": "^2.3.1"
+    "grunt-karma": "^0.11.2",
+    "jasmine": "^2.3.1",
+    "karma": "^0.12.37"
+  },
+  "scripts": {
+    "test": "grunt travis --verbose"
   }
 }
