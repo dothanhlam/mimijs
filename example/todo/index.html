@@ -17,14 +17,17 @@
             };
         }).factory("TodoView", function() {
             return {
-                renderWithTemplate: function(id, data, template) {
+                renderWithTemplate: function(id, data, template, callback) {
+                    callback = callback || function() {};
                     if (typeof cache !== "undefined") {
                         $("#"+id)[0].innerHTML = Mustache.render(cache, data);
+                        callback();
                         return;
                     }
                     $().getJSON({url: template}, function(resp) {
                         cache = resp;
                         $("#"+id)[0].innerHTML  = Mustache.render(cache, data);
+                        callback();
                     })
                 }
             }
@@ -38,15 +41,16 @@
             });
 
             var updateView = function() {
-                view.renderWithTemplate("container", todos, "template.json");
-                var elements = $("input");
-                for (var i in elements) {
-                    elements[i].onclick = function(e) {
-                    var index = e.target.value;
-                    todos.stooges[index].status = !todos.stooges[index].status;
-                    updateView();
+                view.renderWithTemplate("container", todos, "template.json", function() {
+                    var elements = $("input");
+                    for (var i in elements) {
+                        elements[i].onclick = function (e) {
+                            var index = e.target.value;
+                            todos.stooges[index].status = !todos.stooges[index].status;
+                            updateView();
+                        }
                     }
-                }
+                });
             };
         }]);
         // default route or main entry point

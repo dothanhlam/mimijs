@@ -12,6 +12,7 @@ describe("routing", function() {
 
     });
 
+
     it("should return a reference to MimiJS instance", function() {
         var ref = app.routes(function() {});
         expect(ref).toEqual(app);
@@ -25,4 +26,4 @@ describe("routing", function() {
         app.routes("DefaultController");
         expect(app.routes).toHaveBeenCalled();
     });
-});
+})
