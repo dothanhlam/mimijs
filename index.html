@@ -23,6 +23,7 @@
 
         }
     }]).factory("ProductService", function() {
+        console.log(this)
         return {
             get: function() {
                 return {
@@ -63,7 +64,7 @@
                 ]};
                 var output = Mustache.render("<ul> {{#stooges}} <li><a href='#/products/12'>{{name}}</a></li>{{/stooges}}</ul> ", data);
                 document.getElementById("container").innerHTML = output;
-                console.log("default routing")
+                console.log("default routing", this)
             });
 
 </script>

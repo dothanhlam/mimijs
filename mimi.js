@@ -77,6 +77,16 @@ MimiJS = (function (config) {
             if (resources.mode == 'history') {
                 this.interval = setTimeout(fn, 50);
             }
+        },
+
+        navigate: function(path) {
+            path = path ? path : '';
+            if(this.mode === 'history') {
+                history.pushState(null, null, this.root + this.clearSlashes(path));
+            } else {
+                window.location.href.match(/#(.*)$/);
+                window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
+            }
         }
     };
 
@@ -104,6 +114,10 @@ MimiJS = (function (config) {
         routes: function (route, controller) {
             var temp = controller == null ? {'path': "", 'handler': route} : {'path': route, 'handler': controller};
             resources.routes.push(temp);
+        },
+
+        navigate: function(path) {
+            resources.navigate(path);
         },
 
         controller: function (controller, handler) {
@@ -220,6 +234,11 @@ MimiJS = (function (config) {
         return this;
     }
 
+    function navigate(path) {
+        api.navigate(path);
+        return this;
+    }
+
     function controller() {
         api.controller(arguments[0], arguments[1]);
         return this;
@@ -243,7 +262,7 @@ MimiJS = (function (config) {
 
             ControllerService.prototype  = {
                 extend: function(base) {
-                    return this;
+                    return Object.create(base);
                 },
 
                 get: function(name) {
@@ -299,6 +318,7 @@ MimiJS = (function (config) {
         'service': service,
         'provider': provider,
         'routes': routes,
+        'navigate': navigate,
         'controller': controller,
         'constants': constants,
         'module': module

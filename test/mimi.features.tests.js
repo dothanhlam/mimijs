@@ -20,6 +20,11 @@ describe("Mimi features test suite", function() {
         expect(app.routes).toBeTruthy();
     });
 
+    it("has navigate to be defined", function() {
+        expect(app.navigate).toBeDefined();
+        expect(app.navigate).toBeTruthy();
+    });
+
     it("has controller to be defined", function () {
         expect(app.controller).toBeDefined();
         expect(app.controller).toBeTruthy();
@@ -55,9 +60,52 @@ describe("Mimi features test suite", function() {
         expect(typeof window.$).toEqual("function");
     });
 
-    it("should call module function when accessing to module ", function() {
+    it("should call module function when accessing to module", function() {
         spyOn(app, 'module');
-        app.module("test", function() {});
+        app.module("test", function() {
+        });
         expect(app.module).toHaveBeenCalled();
-    })
+    });
+
+    it("factory Object injection", function() {
+        app.factory("BaseFactory", function() {
+            return {"value":"baseValue"};
+        });
+        app.factory("test", ["$mi","BaseFactory", function(mi, BaseFactory) {
+            expect(mi).toEqual({});
+            expect(BaseFactory).not.toBeNull();
+            expect(BaseFactory.value).toEqual("baseValue");
+        }])
+    });
+
+    it("factory Function injection", function() {
+        app.factory("BaseFactory", function() {
+            var privateValue = 0;
+            return {
+                get: function() {
+                    return privateValue;
+                },
+                set: function(val) {
+                    privateValue = val;
+                }
+           }
+        });
+        app.factory("test", ["BaseFactory", function (BaseFactory) {
+            expect(typeof BaseFactory).toEqual("object");
+            expect(typeof BaseFactory.get).toEqual("function");
+            var referenceOfBaseFactory = BaseFactory;
+            spyOn(referenceOfBaseFactory, "get").and.callThrough();
+            spyOn(referenceOfBaseFactory, "set").and.callThrough();
+            expect(referenceOfBaseFactory.get()).toEqual(0);
+            expect(referenceOfBaseFactory.set(1));
+            expect(referenceOfBaseFactory.set).toHaveBeenCalledWith(1);
+        }]);
+    });
+
+    it("should have $controller to be available", function() {
+        app.factory("test", ["$controller", function() {
+            expect(arguments.length).toEqual(1);
+            expect(arguments[0].extend).toBeDefined();
+        }]);
+    });
 });

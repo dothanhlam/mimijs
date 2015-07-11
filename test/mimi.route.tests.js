@@ -18,12 +18,7 @@ describe("routing", function() {
         expect(ref).toEqual(app);
     });
 
-    it("should able to navigate", function() {
-        spyOn(app, "controller");
-        spyOn(app, "routes");
-        app.controller("DefaultController", function() {});
-        expect(app.controller).toHaveBeenCalled();
-        app.routes("DefaultController");
-        expect(app.routes).toHaveBeenCalled();
+    it("should able to navigate with default controller", function() {
+       // should be e2e test
     });
-})
+});
