@@ -8,6 +8,7 @@
 ```
 #MimiJS - Tiny JavaScript framework
 [![Build Status](https://travis-ci.org/dothanhlam/mimijs.svg?branch=master)](https://travis-ci.org/dothanhlam/mimijs)
+[![Coverage Status](https://coveralls.io/repos/dothanhlam/mimijs/badge.svg?branch=master&service=github)](https://coveralls.io/github/dothanhlam/mimijs?branch=master)
 ##Features
 - Routes and Controllers, supports SPA
 - Factory
