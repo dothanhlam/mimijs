@@ -72,7 +72,6 @@ module.exports = function(grunt) {
         },
 
         'http-server': {
-
             'dev': {
                 root: '.',
                 port: function() {
@@ -86,8 +85,6 @@ module.exports = function(grunt) {
                 runInBackground: false
             }
         }
-
-
     });
 
     grunt.loadNpmTasks('grunt-http-server');

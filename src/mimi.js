@@ -83,7 +83,8 @@ MimiJS = (function (config) {
             path = path ? path : '';
             if(this.mode === 'history') {
                 history.pushState(null, null, this.root + this.clearSlashes(path));
-            } else {
+            }
+            else {
                 window.location.href.match(/#(.*)$/);
                 window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
             }
@@ -191,6 +192,43 @@ MimiJS = (function (config) {
             return dependency;
         },
 
+        resolve: function (args, func, scope) {
+            args = args instanceof Array ? args : [args];
+            scope = scope || {};
+            for (var i = 0; i < args.length; i++) {
+                if (typeof args[i] === "string") {
+                    //look in modules
+                    if (resources.hasOwnProperty(args[i])) {
+                        scope[i] =  api.loadModule(args[i]);
+                    }
+                    else {
+                        //look in factory
+                        if (resources.factory.hasOwnProperty(args[i])) {
+                            scope[i] = api.loadDependency(args[i]);
+                        }
+                        else {
+                            //look in constants
+                            if (resources.constants.hasOwnProperty(args[i])) {
+                                scope[i] = api.loadConstant(args[i]);
+                            }
+                            else {
+                                // look in controllers
+                                if (resources.controller.hasOwnProperty(args[i])) {
+                                    scope[i] = resources.controller[args[i]];
+                                }
+                                else {
+                                    throw new Error('Cannot resolve ' + i);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return function() {
+                func.apply(scope || {}, Array.prototype.slice.call(arguments, 0));
+            }
+        },
+
         loadModule: function (key) {
             return resources[key];
         },
@@ -246,6 +284,11 @@ MimiJS = (function (config) {
 
     function module() {
         api.module(arguments[0], arguments[1]);
+        return this;
+    }
+
+    function resolve(deps, func, scope) {
+        api.resolve(deps, func, scope);
         return this;
     }
 
@@ -321,7 +364,8 @@ MimiJS = (function (config) {
         'navigate': navigate,
         'controller': controller,
         'constants': constants,
-        'module': module
+        'module': module,
+        'resolve': resolve
     }
 
     if (typeof jQuery === 'undefined') {

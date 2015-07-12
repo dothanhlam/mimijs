@@ -55,6 +55,11 @@ describe("Mimi features test suite", function() {
         expect(app.filters).toBeTruthy();
     });
 
+    it("has resolve dependencies to be defined", function() {
+        expect(app.resolve).toBeDefined();
+        expect(app.resolve).toBeTruthy();
+    });
+
     it("should instantise MimiCherry if jQuery does not available", function() {
         expect(window.$).toBeDefined();
         expect(typeof window.$).toEqual("function");
@@ -62,12 +67,12 @@ describe("Mimi features test suite", function() {
 
     it("should call module function when accessing to module", function() {
         spyOn(app, 'module');
-        app.module("test", function() {
+        app.module("mi.test", function() {
         });
         expect(app.module).toHaveBeenCalled();
     });
 
-    it("factory Object injection", function() {
+    it("factory object injection", function() {
         app.factory("BaseFactory", function() {
             return {"value":"baseValue"};
         });
@@ -78,7 +83,7 @@ describe("Mimi features test suite", function() {
         }])
     });
 
-    it("factory Function injection", function() {
+    it("factory function injection", function() {
         app.factory("BaseFactory", function() {
             var privateValue = 0;
             return {
@@ -107,5 +112,37 @@ describe("Mimi features test suite", function() {
             expect(arguments.length).toEqual(1);
             expect(arguments[0].extend).toBeDefined();
         }]);
+    });
+
+    it("constants injection test", function() {
+        app.constants("HTTP_ENDPOINT", function() {
+            return {};
+        });
+
+        app.factory("test", ["HTTP_ENDPOINT", function(HTTP_ENDPOINT) {
+            expect(HTTP_ENDPOINT).toBeDefined();
+            expect(HTTP_ENDPOINT).toEqual({});
+        }]);
+    });
+
+    it("controller injection test", function() {
+        app.controller("AuthenticationController", function() {
+            return {
+                auth: function(username, password, callback) {}
+            }
+        });
+
+        app.resolve(["AuthenticationController"], function(controller) {
+            expect(controller).toBeDefined();
+            expect(controller.auth).toBeTruthy();
+            expect(typeof controller.auth).toEqual("function");
+        });
+    });
+
+    it("resolve factory", function() {
+        app.factory("TestFactory", function() {});
+        app.resolve(["TestFactory"], function(f) {
+            expect(f).toBeDefined();
+        });
     });
 });
