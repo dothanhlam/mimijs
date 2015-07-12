@@ -4,7 +4,9 @@
   "repository": "https://github.com/dothanhlam/mimijs",
   "description": "micro javascript framework",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "coveralls": "^2.11.2"
+  },
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-clean": "^0.6.0",
