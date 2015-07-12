@@ -137,6 +137,9 @@ MimiJS = (function (config) {
         },
 
         constants: function (key, val) {
+            if (resources.constants[key]) {
+                throw "Error: " + key + " already existed.";
+            }
             resources.constants[key] = val();
         },
 
@@ -288,8 +291,7 @@ MimiJS = (function (config) {
     }
 
     function resolve(deps, func, scope) {
-        api.resolve(deps, func, scope);
-        return this;
+        return api.resolve(deps, func, scope);
     }
 
     function initiate(config) {

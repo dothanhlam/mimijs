@@ -132,17 +132,59 @@ describe("Mimi features test suite", function() {
             }
         });
 
-        app.resolve(["AuthenticationController"], function(controller) {
+        app.resolve(["AuthenticationController"], function() {
+            var controller = this[0];
             expect(controller).toBeDefined();
-            expect(controller.auth).toBeTruthy();
-            expect(typeof controller.auth).toEqual("function");
-        });
+            expect(controller().auth).toBeDefined();
+            expect(controller().auth).toBeTruthy();
+            expect(typeof controller().auth).toEqual("function");
+        })();
     });
 
-    it("resolve factory", function() {
-        app.factory("TestFactory", function() {});
-        app.resolve(["TestFactory"], function(f) {
+    it("resolves factory", function() {
+        app.factory("TestFactory", function() {return {}});
+        app.resolve(["TestFactory"], function() {
+            var f = this[0];
             expect(f).toBeDefined();
-        });
+        })();
+    });
+
+    it("resolves multiple dependencies", function() {
+        app.module("mi.Module1", function() {return {}});
+        app.module("mi.Module2", function() {return {}});
+        app.factory("TestFactory1", function() {return {}});
+        app.factory("TestFactory2", function() {return {}});
+        app.constants("Constant1", function() {return {}});
+        app.constants("Constant2", function() {return {}});
+        app.controller("Controller1", function() {return {}});
+        app.controller("Controller2", function() {return {}});
+
+        app.resolve(["Module1","Module2",
+                     "TestFactory1", "TestFactory2",
+                     "Constant1", "Constant2",
+                     "Controller1", "Controller2"], function() {
+            var m1 = this[0]; //module1
+            var m2 = this[1]; //module2
+            var f1 = this[2];
+            var f2 = this[3];
+            var c1 = this[4];
+            var c2 = this[5];
+            var ctrl1 = this[6];
+            var ctrl2 = this[7];
+
+            expect(f1).toBeDefined();
+            expect(f2).toBeDefined();
+            expect(c1).toBeDefined();
+            expect(c2).toBeDefined();
+            expect(ctrl1).toBeDefined();
+            expect(ctrl2).toBeDefined();
+            expect(m1).toBeDefined();
+            expect(m2).toBeDefined();
+        })();
+    });
+
+    it("should not allow overriding constants", function() {
+        app.constants("TrollConstant", function(){return{}});
+        expect(function(){  app.constants("TrollConstant", function(){return{}});}).toThrow("Error: TrollConstant already existed.");
     });
 });
