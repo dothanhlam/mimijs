@@ -15,6 +15,11 @@ describe("Mimi features test suite", function() {
         expect(MimiJS.VERSION).toEqual("0.0.5");
     });
 
+    it("has module to be defined", function() {
+        expect(app.module).toBeDefined();
+        expect(app.module).toBeTruthy();
+    });
+
     it("has routes to be defined", function() {
         expect(app.routes).toBeDefined();
         expect(app.routes).toBeTruthy();
@@ -43,6 +48,11 @@ describe("Mimi features test suite", function() {
     it("has service to be defined", function () {
         expect(app.service).toBeDefined();
         expect(app.service).toBeTruthy();
+    });
+
+    it("has provider to be defined", function() {
+        expect(app.provider).toBeDefined();
+        expect(app.provider).toBeTruthy();
     });
 
     it("has factory to be defined", function () {
@@ -104,13 +114,6 @@ describe("Mimi features test suite", function() {
             expect(referenceOfBaseFactory.get()).toEqual(0);
             expect(referenceOfBaseFactory.set(1));
             expect(referenceOfBaseFactory.set).toHaveBeenCalledWith(1);
-        }]);
-    });
-
-    it("should have $controller to be available", function() {
-        app.factory("test", ["$controller", function() {
-            expect(arguments.length).toEqual(1);
-            expect(arguments[0].extend).toBeDefined();
         }]);
     });
 

@@ -300,22 +300,28 @@ MimiJS = (function (config) {
         resources.listen();
 
         factory("$controller", function() {
-
-            function ControllerService() {
-
-            }
-
-            ControllerService.prototype  = {
-                extend: function(base) {
+            return {
+                extend: function(target, base) {
                     return Object.create(base);
                 },
 
-                get: function(name) {
+                mixin: function(target, base, methodNames) {
+                    var args = Array.prototype.slice.apply(arguments);
+                    target = args.shift();
+                    base = args.shift();
+                    methodNames = args;
 
+                    var method;
+                    var length = methodNames.length;
+                    for(var i = 0; i < length; i++) {
+                        method = methodNames[i];
+                        target[method] = function(){
+                            var args = Array.prototype.slice(arguments);
+                            base[method].apply(base, args);
+                        }
+                    }
                 }
             }
-
-            return new ControllerService();
         });
 
 
