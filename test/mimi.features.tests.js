@@ -40,21 +40,6 @@ describe("Mimi features test suite", function() {
         expect(app.constants).toBeTruthy();
     });
 
-    it("has provider to be defined", function () {
-        expect(app.provider).toBeDefined();
-        expect(app.provider).toBeTruthy();
-    });
-
-    it("has service to be defined", function () {
-        expect(app.service).toBeDefined();
-        expect(app.service).toBeTruthy();
-    });
-
-    it("has provider to be defined", function() {
-        expect(app.provider).toBeDefined();
-        expect(app.provider).toBeTruthy();
-    });
-
     it("has factory to be defined", function () {
         expect(app.factory).toBeDefined();
         expect(app.factory).toBeTruthy();

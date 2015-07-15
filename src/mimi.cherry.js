@@ -32,22 +32,138 @@ var MimiCherry = function (selector) {
         this.length = 1;
     }
     return this;
-}
+};
 
 // MimiCherry decoration
 MimiCherry.prototype = {
-    // API Methods
-    hide: function() {
-        for (var i = 0; i < this.length; i++) {
-            this[i].style.display = 'none';
+    hasClass: function(elem, className) {
+        return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
+    },
+
+    addClass: function(elem, className) {
+        if (!this.hasClass(elem, className)) {
+            elem.className += ' ' + className;
         }
-        return this;
+    },
+
+    removeClass: function (elem, className) {
+        var newClass = ' ' + elem.className.replace( /[\t\r\n]/g, ' ') + ' ';
+        if (this.hasClass(elem, className)) {
+            while (newClass.indexOf(' ' + className + ' ') >= 0 ) {
+                newClass = newClass.replace(' ' + className + ' ', ' ');
+            }
+            elem.className = newClass.replace(/^\s+|\s+$/g, '');
+        }
+    },
+
+    toggleClass: function (elem, className) {
+        var newClass = ' ' + elem.className.replace( /[\t\r\n]/g, ' ' ) + ' ';
+        if (this.hasClass(elem, className)) {
+            while (newClass.indexOf(' ' + className + ' ') >= 0 ) {
+                newClass = newClass.replace( ' ' + className + ' ' , ' ' );
+            }
+            elem.className = newClass.replace(/^\s+|\s+$/g, '');
+        }
+        else {
+            elem.className += ' ' + className;
+        }
+    },
+
+    after: function() {
+      throw new Error("Error: method not supported.");
+    },
+    append: function() {
+        throw new Error("Error: method not supported.");
+    },
+    attr: function() {
+        throw new Error("Error: method not supported.");
+    },
+    bind: function() {
+        throw new Error("Error: method not supported.");
+    },
+    children: function() {
+        throw new Error("Error: method not supported.");
+    },
+    clone: function() {
+        throw new Error("Error: method not supported.");
+    },
+    contents: function() {
+        throw new Error("Error: method not supported.");
+    },
+    css: function() {
+        throw new Error("Error: method not supported.");
+    },
+    data: function() {
+        throw new Error("Error: method not supported.");
+    },
+    detach: function() {
+        throw new Error("Error: method not supported.");
+    },
+    empty: function() {
+        throw new Error("Error: method not supported.");
+    },
+    eq: function() {
+        throw new Error("Error: method not supported.");
+    },
+    find: function() {
+        throw new Error("Error: method not supported.");
+    },
+    html: function() {
+        throw new Error("Error: method not supported.");
+    },
+    next: function() {
+        throw new Error("Error: method not supported.");
+    },
+    on: function() {
+        throw new Error("Error: method not supported.");
+    },
+    off: function() {
+        throw new Error("Error: method not supported.");
+    },
+    one: function() {
+        throw new Error("Error: method not supported.");
+    },
+    parent: function() {
+        throw new Error("Error: method not supported.");
+    },
+    prepend: function() {
+        throw new Error("Error: method not supported.");
+    },
+    prop: function() {
+        throw new Error("Error: method not supported.");
+    },
+    ready: function() {
+        throw new Error("Error: method not supported.");
     },
     remove: function() {
-        for (var i = 0; i < this.length; i++) {
-            this[i].parentNode.removeChild(this[i]);
-        }
-        return this;
+        throw new Error("Error: method not supported.");
+    },
+    removeAttr: function() {
+        throw new Error("Error: method not supported.");
+    },
+    removeData: function() {
+        throw new Error("Error: method not supported.");
+    },
+    replaceWith: function() {
+        throw new Error("Error: method not supported.");
+    },
+    text: function() {
+        throw new Error("Error: method not supported.");
+    },
+    toggleClass: function() {
+        throw new Error("Error: method not supported.");
+    },
+    triggerHandler: function() {
+        throw new Error("Error: method not supported.");
+    },
+    unbind: function() {
+        throw new Error("Error: method not supported.");
+    },
+    val: function() {
+        throw new Error("Error: method not supported.");
+    },
+    wrap: function() {
+        throw new Error("Error: method not supported.");
     },
 
     getJSON: function(options, callback) {

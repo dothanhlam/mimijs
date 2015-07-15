@@ -256,15 +256,6 @@ MimiJS = (function (config) {
         return this;
     }
 
-    function service() {
-        return this;
-    }
-
-    function provider() {
-        api.provider(arguments[0], arguments[1]);
-        return this;
-    }
-
     function constants() {
         api.constants(arguments[0], arguments[1]);
         return this;
@@ -366,8 +357,6 @@ MimiJS = (function (config) {
     var publicAPIs = {
         'filters': filters,
         'factory': factory,
-        'service': service,
-        'provider': provider,
         'routes': routes,
         'navigate': navigate,
         'controller': controller,
