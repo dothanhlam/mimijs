@@ -25,7 +25,14 @@ MimiCloak = (function () {
         code += 'return r.join("");';
         return new Function(code.replace(/[\r\t\n]/g, '')).apply(options);
     };
+
+
+    var renderExternalTemplate = function(url, options) {
+
+    };
+
     return {
-        'render': render
+        'render': render,
+        'renderExternalTemplate': renderExternalTemplate
     }
 })();

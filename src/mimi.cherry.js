@@ -21,7 +21,7 @@ var MimiCherry = function (selector) {
         return this;
     }
 
-    if (nodes.hasOwnProperty('length')) {
+    if (nodes.hasOwnProperty('length') && nodes.length > 1) {
         for (var i = 0; i < nodes.length; i++) {
             this[i] = nodes[i];
         }

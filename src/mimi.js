@@ -220,7 +220,7 @@ MimiJS = (function (config) {
                                     scope[i] = resources.controller[args[i]];
                                 }
                                 else {
-                                    throw new Error('Cannot resolve ' + i);
+                                    throw new Error('Error: Cannot resolve dependency ' + i);
                                 }
                             }
                         }
@@ -368,7 +368,7 @@ MimiJS = (function (config) {
     if (typeof jQuery === 'undefined') {
         console.warn("jQuery is not available, MimiCherry APIs loaded with very limited features!");
         window.$ = function(selector) {
-            return new MimiCherry(selector)
+            return new MimiCherry(selector);
         };
     }
     else {
