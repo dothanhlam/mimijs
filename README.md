@@ -9,7 +9,7 @@
 #MimiJS - Micro MVC JavaScript Framework
 [![Build Status](https://travis-ci.org/dothanhlam/mimijs.svg?branch=master)](https://travis-ci.org/dothanhlam/mimijs)
 [![Coverage Status](https://coveralls.io/repos/dothanhlam/mimijs/badge.svg?branch=master&service=github)](https://coveralls.io/github/dothanhlam/mimijs?branch=master)
-[![Dependencies Status](https://david-dm.org/dothanhlam/mimijs.svg)]
+![Dependencies Status](https://david-dm.org/dothanhlam/mimijs.svg)
 ##Features - version 0.5.0
 - DI and IoC
 - Routes
@@ -18,6 +18,21 @@
 - Mimi Cherry: replacement for jQuery
 - Mimi Cloak: HTML template binding
 - Working with Mustache, RactiveJS, ReactJS, EJS ...
+##Build
+MimiJS is under developing, please create your own build for experiment. The development process requires grunt-cli and
+istanbul (code coverage), so if you have not installed before, please install them first.
+```
+npm install -g grunt-cli
+npm install -g istanbul
+```
+Update all dependencies
+```
+npm install
+```
+Create build
+```
+grunt travis
+```
 ##Usages
 ###Initial
 ```
