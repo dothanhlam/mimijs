@@ -349,6 +349,17 @@ MimiJS = (function (config) {
 
             return new Observer();
         });
+
+        factory("$http", function() {
+            return {
+                get: function (params, success, error) {
+                },
+
+                post: function(params, success, error) {
+
+                }
+            }
+        });
     }
 
     var publicAPIs = {
@@ -368,4 +379,4 @@ MimiJS = (function (config) {
     return publicAPIs;
 });
 
-MimiJS.VERSION = "0.0.5";
+MimiJS.VERSION = "0.5.0";

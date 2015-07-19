@@ -10,9 +10,9 @@ describe("Mimi features test suite", function() {
     afterEach(function() {
     });
 
-    it("has current version is 0.0.5", function() {
+    it("has current version is 0.5.0", function() {
         expect(MimiJS.VERSION).toBeDefined();
-        expect(MimiJS.VERSION).toEqual("0.0.5");
+        expect(MimiJS.VERSION).toEqual("0.5.0");
     });
 
     it("has module to be defined", function() {
