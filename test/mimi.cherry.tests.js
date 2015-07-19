@@ -139,4 +139,28 @@ describe("MimiCherry features test suite", function() {
         b.toggleClass("foobar");
         expect(b.hasClass("foobar")).toEqual(true);
     });
+
+    it("should have remove function to be implemented", function() {
+        var d = document.createElement("div");
+        var p = document.createElement("p");
+        p.appendChild(document.createTextNode("1"));
+        p.setAttribute("class", "foobar-child");
+        d.appendChild(p);
+        d.setAttribute("class", "foobar");
+        document.body.appendChild(d);
+        expect($(".foobar").remove).toBeDefined();
+        expect($(".foobar-child").remove).toBeDefined();
+        $(".foobar-child").remove();
+        expect($(".foobar-child").hasClass("foobar-child")).toEqual(false);
+    });
+
+    it("should have getJSON to be implemented", function() {
+        expect($("").getJSON).toBeDefined();
+        var cherry = $("");
+        var callback = function() {};
+        var options = {url: "/foo"};
+        spyOn(cherry, "getJSON");
+        cherry.getJSON(options, callback);
+        expect(cherry.getJSON).toHaveBeenCalledWith(options, callback);
+    });
 });

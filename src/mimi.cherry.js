@@ -173,7 +173,14 @@ var cherry, $;
         },
         remove: function() {
             for (var i = 0; i < this.length; i++) {
-                this[i].parentNode.removeChild(this[i]);
+                var parentNode = this[i][0].parentNode;
+                if (parentNode) {
+                    parentNode.removeChild(this[i][0]);
+                    delete parentNode;
+                }
+                else {
+                    continue;
+                }
             }
             return this;
         },

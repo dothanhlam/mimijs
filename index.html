@@ -79,6 +79,15 @@
     console.log("foo", $("#foo").toggleClass("barbar").hasClass("barbar"))
     console.log("foo", $("#foo").toggleClass("barbar").hasClass("barbar"))
 
+    var d = document.createElement("div");
+    var p = document.createElement("p");
+    p.appendChild(document.createTextNode("11111"));
+    p.setAttribute("class", "foobar-child");
+    d.appendChild(p);
+    d.setAttribute("class", "foobar");
+    document.body.appendChild(d);
+    $(".foobar-child").remove();
+
     // var b = $("#foo");
   //  console.log("b", b.hasClass("test"))
 </script>
