@@ -6,22 +6,26 @@
 | ||_|| ||   | | ||_|| ||   | |       | _____| |
 |_|   |_||___| |_|   |_||___| |_______||_______|
 ```
-#MimiJS - Tiny JavaScript framework
+#MimiJS - Micro MVC JavaScript Framework
 [![Build Status](https://travis-ci.org/dothanhlam/mimijs.svg?branch=master)](https://travis-ci.org/dothanhlam/mimijs)
 [![Coverage Status](https://coveralls.io/repos/dothanhlam/mimijs/badge.svg?branch=master&service=github)](https://coveralls.io/github/dothanhlam/mimijs?branch=master)
-##Features
-- Routes and Controllers, supports SPA
-- Factory
-- Constants
-- Template loading and binding
-- Modules
-
+[![Dependencies Status](https://david-dm.org/dothanhlam/mimijs.svg)]
+##Features - version 0.5.0
+- DI and IoC
+- Routes
+- Single Page Architecture (SPA)
+- Controller, Factory, Resolve
+- Mimi Cherry: replacement for jQuery
+- Mimi Cloak: HTML template binding
+- Working with Mustache, RactiveJS, ReactJS, EJS ...
 ##Usages
 ###Initial
 ```
 var app = MimiJS();
 ```
-###View (Testing with Mustache template)
+###Create View provider
+#### Mustache template
+Mimi can use various HTML template engine
 ```
 app.factory("ProductView", function() {
   return {
@@ -31,6 +35,21 @@ app.factory("ProductView", function() {
     }
   }
 });
+```
+#### Mimi Cloak template
+Support simple and fast rendering HTML with data binding
+```
+app.factory("CloakView", function() {
+    return {
+        render: function(id, data) {
+            var template = '<%for(var index in this.data) {%>' +
+                '<p><%this.data[index]%></p>' +
+                '<%}%>';
+            $("#".concat(id))[0].innerHTML = MimiCloak.render(template, {data:data});
+        }
+    }
+})
+
 ```
 ###Service
 ```
@@ -50,6 +69,7 @@ app.factory("ProductService", function() {
 ```
 
 ###Controller
+Defines scope and handles action when routes change
 ```
 app.controller("HomeController", function(){
   console.log("this is home controller");
@@ -71,3 +91,16 @@ app.routes("home/", "HomeController")
   });
 
 ```
+###Resolve - Dependency Injection
+Resolve api supports for unit testing as well
+```
+it("resolves factory", function() {
+    app.factory("TestFactory", function() {return {}});
+        app.resolve(["TestFactory"], function() {
+            var f = this.TestFactory;
+            expect(f).toBeDefined();
+        })();
+});
+```
+##Note
+Mimi Cherry will be default loaded if jQuery does not include in application
