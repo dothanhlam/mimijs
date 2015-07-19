@@ -18,7 +18,8 @@
 - Mimi Cherry: replacement for jQuery
 - Mimi Cloak: HTML template binding
 - Working with Mustache, RactiveJS, ReactJS, EJS ...
-##Build
+
+##Create build for experiment
 MimiJS is under developing, please create your own build for experiment. The development process requires grunt-cli and
 istanbul (code coverage), so if you have not installed before, please install them first.
 ```
