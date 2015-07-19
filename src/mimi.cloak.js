@@ -27,8 +27,24 @@ MimiCloak = (function () {
     };
 
 
-    var renderExternalTemplate = function(url, options) {
+    var renderExternalTemplate = function(params, options) {
+        var callback = params.callback || function() { throw new Error("Error: callback required.")};
+        var url = params.url || location.href;
 
+        var xhttp = function() {
+            var instance = new XMLHttpRequest();
+            return instance;
+        }();
+
+        options.data = options.data || null;
+        options.type = options.type || 'json';
+
+        xhttp.open('GET', url, true);
+        xhttp.onreadystatechange = function() {
+            if (xhttp.status == 200 && xhttp.readyState == 4) {
+                callback(render(xhttp.responseText, options.data));
+            }
+        };
     };
 
     return {

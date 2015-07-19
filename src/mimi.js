@@ -96,10 +96,6 @@ MimiJS = (function (config) {
             resources.filters[key] = val;
         },
 
-        provider: function(name, provider) {
-
-        },
-
         factory: function (key, arrayArg) {
             arrayArg = arrayArg instanceof  Array ? arrayArg : [arrayArg];
             var lastIndex = arrayArg.length - 1;
@@ -199,25 +195,27 @@ MimiJS = (function (config) {
             args = args instanceof Array ? args : [args];
             scope = scope || {};
             for (var i = 0; i < args.length; i++) {
+
                 if (typeof args[i] === "string") {
+                    var dependencyName = args[i];
                     //look in modules
                     if (resources.hasOwnProperty(args[i])) {
-                        scope[i] =  api.loadModule(args[i]);
+                        scope[dependencyName] = api.loadModule(args[i]);
                     }
                     else {
                         //look in factory
                         if (resources.factory.hasOwnProperty(args[i])) {
-                            scope[i] = api.loadDependency(args[i]);
+                            scope[dependencyName] = api.loadDependency(args[i]);
                         }
                         else {
                             //look in constants
                             if (resources.constants.hasOwnProperty(args[i])) {
-                                scope[i] = api.loadConstant(args[i]);
+                                scope[dependencyName] = api.loadConstant(args[i]);
                             }
                             else {
                                 // look in controllers
                                 if (resources.controller.hasOwnProperty(args[i])) {
-                                    scope[i] = resources.controller[args[i]];
+                                    scope[dependencyName] = resources.controller[args[i]];
                                 }
                                 else {
                                     throw new Error('Error: Cannot resolve dependency ' + i);
@@ -353,7 +351,6 @@ MimiJS = (function (config) {
         });
     }
 
-
     var publicAPIs = {
         'filters': filters,
         'factory': factory,
@@ -365,15 +362,6 @@ MimiJS = (function (config) {
         'resolve': resolve
     }
 
-    if (typeof jQuery === 'undefined') {
-        console.warn("jQuery is not available, MimiCherry APIs loaded with very limited features!");
-        window.$ = function(selector) {
-            return new MimiCherry(selector);
-        };
-    }
-    else {
-        // jQuery is available
-    }
 
     initiate();
 

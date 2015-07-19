@@ -12,7 +12,12 @@ describe("MimiCloak features test suite", function() {
         expect(MimiCloak.render).toBeTruthy();
     });
 
-    it("render method should render simple logical block", function() {
+    it("should have  renderExternalTemplate method", function() {
+        expect(MimiCloak.renderExternalTemplate).toBeDefined();
+        expect(MimiCloak.renderExternalTemplate).toBeTruthy();
+    });
+
+    it("render method should render with logical block", function() {
         var template =
             '<%if(this.showSkills) {%>' +
             '<%for(var index in this.skills) {%>' +
@@ -29,5 +34,10 @@ describe("MimiCloak features test suite", function() {
             skills: ["js", "html", "css"],
             showSkills: true
         })).toEqual('<a href="#">js</a><a href="#">html</a><a href="#">css</a>');
+    });
+
+    it("render method should work without data", function() {
+        var template = "<p>Just a template</p>";
+        expect(MimiCloak.render(template)).toEqual("<p>Just a template</p>");
     });
 });

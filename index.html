@@ -8,6 +8,9 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.1.2/mustache.min.js"></script>
 </head>
 <body>
+<h1>The content below changes</h1>
+<div id="container"></div>
+<div id="foo" class="test">Foo container</div>
 <script>
     var app = MimiJS({mode: 'hash'});
 
@@ -68,10 +71,17 @@
                 console.log("default routing", this)
             });
     var res = app.resolve(["HomeController", "DefaultController"], function() {
-        console.log("this", this[0]);
-    })("test")
+        console.log("this", this.DefaultController);
+    })("test");
+
+    console.log("foo", $("#foo").addClass("bar").addClass("barbar").hasClass("barbar"))
+    console.log("foo", $("#foo").toggleClass("barbar").hasClass("barbar"))
+    console.log("foo", $("#foo").toggleClass("barbar").hasClass("barbar"))
+    console.log("foo", $("#foo").toggleClass("barbar").hasClass("barbar"))
+
+    // var b = $("#foo");
+  //  console.log("b", b.hasClass("test"))
 </script>
-    <h1>The content below changes</h1>
-    <div id="container"></div>
+
 </body>
 </html>

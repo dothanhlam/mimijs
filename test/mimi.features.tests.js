@@ -121,7 +121,7 @@ describe("Mimi features test suite", function() {
         });
 
         app.resolve(["AuthenticationController"], function() {
-            var controller = this[0];
+            var controller = this.AuthenticationController;
             expect(controller).toBeDefined();
             expect(controller().auth).toBeDefined();
             expect(controller().auth).toBeTruthy();
@@ -132,7 +132,7 @@ describe("Mimi features test suite", function() {
     it("resolves factory", function() {
         app.factory("TestFactory", function() {return {}});
         app.resolve(["TestFactory"], function() {
-            var f = this[0];
+            var f = this.TestFactory;
             expect(f).toBeDefined();
         })();
     });
@@ -151,14 +151,14 @@ describe("Mimi features test suite", function() {
                      "TestFactory1", "TestFactory2",
                      "Constant1", "Constant2",
                      "Controller1", "Controller2"], function() {
-            var m1 = this[0]; //module1
-            var m2 = this[1]; //module2
-            var f1 = this[2];
-            var f2 = this[3];
-            var c1 = this[4];
-            var c2 = this[5];
-            var ctrl1 = this[6];
-            var ctrl2 = this[7];
+            var m1 = this.Module1;
+            var m2 = this.Module2;
+            var f1 = this.TestFactory1;
+            var f2 = this.TestFactory2;
+            var c1 = this.Constant1;
+            var c2 = this.Constant2;
+            var ctrl1 = this.Controller1;
+            var ctrl2 = this.Controller2;
 
             expect(f1).toBeDefined();
             expect(f2).toBeDefined();
@@ -168,6 +168,7 @@ describe("Mimi features test suite", function() {
             expect(ctrl2).toBeDefined();
             expect(m1).toBeDefined();
             expect(m2).toBeDefined();
+
         })();
     });
 
