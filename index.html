@@ -14,10 +14,14 @@
 <script>
     var app = MimiJS({mode: 'hash'});
 
-    app.factory("ProductView",['$mi', function(mi) {
+    app.factory("ProductView",['$mi', '$http', function(mi, $http) {
 
-        console.log("ProductView", this);
-
+        console.log("ProductView", $http);
+        $http.get('url: //www.google.com', function() {
+            console.log('onload')
+        }, function() {
+            console.log('on error')
+        })
         return {
             render: function(id, data) {
                 var output = Mustache.render("<ul> {{#stooges}} <li><button class='button'>{{name}}</button></li>{{/stooges}}</ul> ", data);
@@ -46,7 +50,8 @@
         console.log("this is home controller");
     }).controller("DefaultController", function() {
         console.log("this is default controller");
-    }).controller("ProductController", ["$mi", "$observer", "ProductService", "ProductView", function(mi, observer, service, view, products) {
+    }).controller("ProductController", ["$mi", "$observer", "ProductService", "ProductView", "$http", function(mi, observer, service, view, $http) {
+        console.log('$http', $http);
         console.log("ProductController - mi", mi)
         var data  = service.get();
         view.render("container", data);

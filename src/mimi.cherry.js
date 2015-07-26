@@ -203,8 +203,12 @@ var cherry, $;
         unbind: function() {
             throw new Error("Error: method not supported.");
         },
-        val: function() {
-            throw new Error("Error: method not supported.");
+        val: function(v) {
+            try {
+                return eval(v);
+            } catch(e) {
+                return ""
+            }
         },
         wrap: function() {
             throw new Error("Error: method not supported.");

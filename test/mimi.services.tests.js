@@ -52,5 +52,27 @@ describe("Mimi services test suite", function() {
             expect(o.unsubscribe).toBeDefined();
             expect(o.fire).toBeDefined();
         }]);
-    })
+    });
+
+    it("should have $http to be implemented", function() {
+        app.resolve(["$http"], function() {
+            expect(this.$http).toBeDefined();
+            expect(this.$http).toBeTruthy();
+            expect(this.$http.get).toBeDefined();
+            expect(this.$http.post).toBeDefined();
+
+         //   var onLoad = jasmine.createSpy("onLoad");
+         //   var onError = jasmine.createSpy("onError");
+
+            var onLoad = function() {
+                console.log("onLoad")
+            };
+
+            var onError = function() {
+                console.log("onError")
+            }
+            this.$http.get({url:"/foo/bar"}, onLoad, onError);
+           // expect(onLoad).toHaveBeenCalled();
+        })();
+    });
 });

@@ -352,11 +352,28 @@ MimiJS = (function (config) {
 
         factory("$http", function() {
             return {
-                get: function (params, success, error) {
+                get: function (params, onLoad, onError) {
+                    var url = params.url || "/";
+                    var data = params.data || {"rand": Math.random()};
+                    var requestParams  = Object.keys(data).map(function(k) {
+                        return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+                    }).join('&');
+                    var request = new XMLHttpRequest();
+                    request.open('GET', url + "?" + requestParams, true);
+                    request.onload = onLoad;
+                    request.onerror = onError;
+                    request.send();
                 },
 
-                post: function(params, success, error) {
-
+                post: function(params, onLoad, onError) {
+                    var url = params.url || "/";
+                    var data = params.data || {};
+                    var request = new XMLHttpRequest();
+                    request.open('POST', url, true);
+                    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+                    request.onload = onLoad;
+                    request.error = onError;
+                    request.send(data);
                 }
             }
         });

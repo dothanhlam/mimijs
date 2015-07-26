@@ -90,7 +90,7 @@ describe("MimiCherry features test suite", function() {
         expect(c).toBeDefined();
     });
 
-    it("should have hasClass function to be implemented", function() {
+    it("hasClass - function to be implemented", function() {
         var d = document.createElement("div");
         d.appendChild(document.createTextNode("1"));
         d.setAttribute("class", "bar");
@@ -103,7 +103,7 @@ describe("MimiCherry features test suite", function() {
         expect(b.hasClass("bar")).toEqual(true);
     });
 
-   it("should have addClass function to be implemented", function() {
+   it("addClass - function to be implemented", function() {
         var d = document.createElement("div");
         d.appendChild(document.createTextNode("1"));
         d.setAttribute("class", "bar");
@@ -117,7 +117,7 @@ describe("MimiCherry features test suite", function() {
         expect(b.hasClass("foobar")).toEqual(true);
     });
 
-    it("should have removeClass function to be implemented", function() {
+    it("removeClass - function to be implemented", function() {
         var d = document.createElement("div");
         d.appendChild(document.createTextNode("1"));
         d.setAttribute("class", "bar");
@@ -127,7 +127,7 @@ describe("MimiCherry features test suite", function() {
         expect(b.addClass("foo").removeClass("bar").hasClass("bar")).toEqual(false);
     });
     
-    it("should have toggleClass function to be implemented", function () {
+    it("toggleClass - function to be implemented", function () {
         var d = document.createElement("div");
         d.appendChild(document.createTextNode("1"));
         d.setAttribute("class", "foobar");
@@ -140,7 +140,7 @@ describe("MimiCherry features test suite", function() {
         expect(b.hasClass("foobar")).toEqual(true);
     });
 
-    it("should have remove function to be implemented", function() {
+    it("remove - function to be implemented", function() {
         var d = document.createElement("div");
         var p = document.createElement("p");
         p.appendChild(document.createTextNode("1"));
@@ -154,7 +154,11 @@ describe("MimiCherry features test suite", function() {
         expect($(".foobar-child").hasClass("foobar-child")).toEqual(false);
     });
 
-    it("should have getJSON to be implemented", function() {
+    it("val - function to be implemented", function() {
+        expect($(".foobar").val).toBeDefined();
+    });
+
+    it("getJSON - function to be implemented", function() {
         expect($("").getJSON).toBeDefined();
         var cherry = $("");
         var callback = function() {};
