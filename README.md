@@ -14,7 +14,8 @@
 [![Build Status](https://travis-ci.org/dothanhlam/mimijs.svg?branch=master)](https://travis-ci.org/dothanhlam/mimijs)
 [![Coverage Status](https://coveralls.io/repos/dothanhlam/mimijs/badge.svg?branch=master&service=github)](https://coveralls.io/github/dothanhlam/mimijs?branch=master)
 ![Dependencies Status](https://david-dm.org/dothanhlam/mimijs.svg)
-##Features - version 0.5.0
+##I am going to move mimijs to ES6 version with discontinuing support ES5 version.
+##Features - version 1.0
 - DI and IoC
 - Routes
 - Single Page Architecture (SPA)
